@@ -21,6 +21,7 @@
         "@inertiajs/vue3": "^2.0.0",
         "@primevue/themes": "^4.2.5",
         "@vitejs/plugin-vue": "^5.2.1",
+        "laravel-precognition-vue-inertia": "^0.5.14",
         "primeicons": "^7.0.0",
         "primevue": "^4.2.5",
         "tailwindcss-primeui": "^0.3.4"
