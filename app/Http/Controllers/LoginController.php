@@ -8,8 +8,6 @@ use Inertia\Inertia;
 
 class LoginController extends Controller
 {
-    protected $redirectTo = '/';
-
     public function showLoginForm()
     {
         return Inertia::render('Auth/Login');
