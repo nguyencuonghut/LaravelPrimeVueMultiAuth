@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('status', ['On', 'Off']);
+            $table->enum('role', ['Quản trị', 'Người dùng']);
             $table->rememberToken();
             $table->timestamps();
         });
