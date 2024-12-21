@@ -2,8 +2,13 @@
 import { useLayout } from '@/PrimeVue/layout/composables/layout';
 import AppConfigurator from './AppConfigurator.vue';
 import NavLink from "@/Components/NavLink.vue";
+import { computed } from 'vue'
+import { usePage } from '@inertiajs/vue3'
 
 const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout();
+
+const page = usePage();
+const user_name = computed(() => page.props.auth.user.user_name)
 </script>
 
 <template>
@@ -31,7 +36,7 @@ const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout();
                     </g>
                 </svg>
 
-                <span>SAKAI</span>
+                <span>{{ user_name }}</span>
             </NavLink>
         </div>
 
