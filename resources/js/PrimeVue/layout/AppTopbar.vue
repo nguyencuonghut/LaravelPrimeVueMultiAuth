@@ -2,10 +2,15 @@
 import { useLayout } from '@/PrimeVue/layout/composables/layout';
 import AppConfigurator from './AppConfigurator.vue';
 import NavLink from "@/Components/NavLink.vue";
+import { router } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { usePage } from '@inertiajs/vue3'
 
 const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout();
+
+const logout = () => {
+    router.post('/logout')
+};
 
 const page = usePage();
 const user_name = computed(() => page.props.auth.user.user_name)
@@ -71,12 +76,12 @@ const user_name = computed(() => page.props.auth.user.user_name)
                         <span>Calendar</span>
                     </button>
                     <button type="button" class="layout-topbar-action">
-                        <i class="pi pi-inbox"></i>
-                        <span>Messages</span>
-                    </button>
-                    <button type="button" class="layout-topbar-action">
                         <i class="pi pi-user"></i>
                         <span>Profile</span>
+                    </button>
+                    <button @click="logout" type="button" class="layout-topbar-action">
+                        <i class="pi pi-power-off"></i>
+                        <span>Logout</span>
                     </button>
                 </div>
             </div>
