@@ -1,5 +1,6 @@
 import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
+import AppLayout from '@/PrimeVue/layout/AppLayout.vue';
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura'
 
@@ -9,7 +10,11 @@ import '@/PrimeVue/assets/tailwind.css';
 createInertiaApp({
   resolve: name => {
     const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
-    return pages[`./Pages/${name}.vue`]
+    let page = pages[`./Pages/${name}.vue`]
+    if (page.default.layout === undefined) {
+        page.default.layout = AppLayout;
+    }
+    return page
   },
   setup({ el, App, props, plugin }) {
     createApp({ render: () => h(App, props) })

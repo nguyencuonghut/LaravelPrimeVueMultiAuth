@@ -1,9 +1,9 @@
 <template>
     <Head>
-        <title>Trang chủ</title>
+        <title>Người dùng</title>
     </Head>
 
-    <h1>Trang chủ</h1>
+    <h1>Người dùng</h1>
 </template>
 
 <script setup>
