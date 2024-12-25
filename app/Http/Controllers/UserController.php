@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,7 +13,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        return Inertia::render('UserIndex');
+        $users = User::orderBy('name', 'asc')->get()->map(function ($user) {
+            return collect($user)->only(['id', 'name', 'email', 'status', 'role']);
+        });
+
+        return Inertia::render('UserIndex', ['users' => $users]);
     }
 
     /**
