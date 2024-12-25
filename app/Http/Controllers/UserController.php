@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -13,7 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('name', 'asc')->get()->map(function ($user) {
+        $users = User::orderBy('id', 'desc')->get()->map(function ($user) {
             return collect($user)->only(['id', 'name', 'email', 'status', 'role']);
         });
 
@@ -31,9 +34,18 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        //
+        $user = new User();
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->status = $request->status;
+        $user->password = bcrypt($request->password);
+        $user->role = $request->role;
+        $user->save();
+
+        return redirect('/users');
     }
 
     /**
@@ -55,16 +67,36 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->status = $request->status;
+        $user->role = $request->role;
+        $user->save();
+
+        return redirect('/users');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+        return redirect('/users');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $users = $request->users;
+        foreach ($users as $user) {
+            $deleted_user = User::findOrFail($user['id']);
+            if ($deleted_user) {
+                $deleted_user->destroy($deleted_user->id);
+            }
+        }
+
+        return redirect('/users');
     }
 }

@@ -2,7 +2,9 @@ import { createApp, h } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'
 import AppLayout from '@/PrimeVue/layout/AppLayout.vue';
 import PrimeVue from 'primevue/config';
-import Aura from '@primevue/themes/aura'
+import Aura from '@primevue/themes/aura';
+import ConfirmationService from 'primevue/confirmationservice';
+import ToastService from 'primevue/toastservice';
 
 import '@/PrimeVue/assets/styles.scss';
 import '@/PrimeVue/assets/tailwind.css';
@@ -29,6 +31,8 @@ createInertiaApp({
                 }
             }
       })
+      .use(ToastService)
+      .use(ConfirmationService)
       .mount(el)
   },
 })

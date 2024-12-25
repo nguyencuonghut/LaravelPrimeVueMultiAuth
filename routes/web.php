@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
+use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Support\Facades\Route;
 
 /** Login routes */
@@ -19,5 +20,6 @@ Route::group(['middleware'=>'auth:web'], function() {
     Route::get('/', [HomeController::class, 'home'])->name('home');
 
     //User routes
+    Route::post('users/bulkDelete', [UserController::class, 'bulkDelete']);
     Route::resource('users', UserController::class);
 });
