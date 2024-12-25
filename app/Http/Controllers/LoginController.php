@@ -27,9 +27,16 @@ class LoginController extends Controller
         ];
         $credentials = $request->validate($rules, $messages);
 
-        if (Auth::attempt($credentials, $request->remember)) {
+        if (Auth::attempt($credentials)) {
+            //Check if status is Off
+            if ('Off' == Auth::user()->status) {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Tài khoản bị khóa!']);
+            }
+
             $request->session()->regenerate();
-            return redirect()->intended();
+
+            return redirect()->route('home');
         }
 
         return back()->withErrors([
