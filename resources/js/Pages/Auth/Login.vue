@@ -10,7 +10,6 @@ const form = useForm('post', '/login', {
     remember: true,
 });
 const submit = () => {
-    console.log(form);
     form.submit({
         preserveScroll: true,
         onSuccess: () => form.reset(),
