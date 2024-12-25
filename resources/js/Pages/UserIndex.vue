@@ -4,15 +4,15 @@
     </Head>
 
     <div class="card">
-        <Toolbar class="mb-6">
+        <Toolbar  v-if="can.create_user || can.delete_user || can.import_user || can.export_user" class="mb-6">
             <template #start>
-                <Button label="New" icon="pi pi-plus" class="mr-2" @click="openNew" />
-                <Button label="Delete" icon="pi pi-trash" severity="danger" outlined @click="confirmDeleteSelected" :disabled="!selectedUsers || !selectedUsers.length" />
+                <Button v-if="can.create_user" label="New" icon="pi pi-plus" class="mr-2" @click="openNew" />
+                <Button v-if="can.delete_user" label="Delete" icon="pi pi-trash" severity="danger" outlined @click="confirmDeleteSelected" :disabled="!selectedUsers || !selectedUsers.length" />
             </template>
 
             <template #end>
-                <FileUpload mode="basic" accept="image/*" :maxFileSize="1000000" label="Import" customUpload chooseLabel="Import" class="mr-2" auto :chooseButtonProps="{ severity: 'secondary' }" />
-                <Button label="Export" icon="pi pi-upload" severity="secondary" @click="exportCSV($event)" />
+                <FileUpload v-if="can.import_user" mode="basic" accept="image/*" :maxFileSize="1000000" label="Import" customUpload chooseLabel="Import" class="mr-2" auto :chooseButtonProps="{ severity: 'secondary' }" />
+                <Button v-if="can.export_user" label="Export" icon="pi pi-upload" severity="secondary" @click="exportCSV($event)" />
             </template>
         </Toolbar>
 
@@ -71,7 +71,7 @@
                     </Select>
                 </template>
             </Column>
-            <Column :exportable="false" style="min-width: 12rem">
+            <Column  v-if="can.update_user || can.delete_user" :exportable="false" style="min-width: 12rem">
                 <template #body="slotProps">
                     <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editUser(slotProps.data)" />
                     <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmDeleteUser(slotProps.data)" />
@@ -172,6 +172,7 @@ defineProps({
         type: Object,
     },
     users: Object,
+    can: Object,
 });
 
 const userDialog = ref(false);

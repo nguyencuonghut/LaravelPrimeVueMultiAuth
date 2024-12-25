@@ -20,7 +20,18 @@ class UserController extends Controller
             return collect($user)->only(['id', 'name', 'email', 'status', 'role']);
         });
 
-        return Inertia::render('UserIndex', ['users' => $users]);
+        $can = [
+            'create_user' => 'Quản trị' ==  Auth::user()->role,
+            'update_user' => 'Quản trị' ==  Auth::user()->role,
+            'delete_user' => 'Quản trị' ==  Auth::user()->role,
+            'import_user' => 'Quản trị' ==  Auth::user()->role,
+            'export_user' => 'Quản trị' ==  Auth::user()->role,
+        ];
+
+        return Inertia::render('UserIndex', [
+            'users' => $users,
+            'can' => $can,
+        ]);
     }
 
     /**
@@ -36,6 +47,11 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
+        //Check authorize
+        if ('Quản trị' != Auth::user()->role) {
+            return redirect('/users');
+        }
+
         $user = new User();
 
         $user->name = $request->name;
@@ -69,6 +85,11 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+        //Check authorize
+        if ('Quản trị' != Auth::user()->role) {
+            return redirect('/users');
+        }
+
         $user->name = $request->name;
         $user->email = $request->email;
         $user->status = $request->status;
@@ -83,12 +104,22 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        //Check authorize
+        if ('Quản trị' != Auth::user()->role) {
+            return redirect('/users');
+        }
+
         $user->delete();
         return redirect('/users');
     }
 
     public function bulkDelete(Request $request)
     {
+        //Check authorize
+        if ('Quản trị' != Auth::user()->role) {
+            return redirect('/users');
+        }
+
         $users = $request->users;
         foreach ($users as $user) {
             $deleted_user = User::findOrFail($user['id']);
