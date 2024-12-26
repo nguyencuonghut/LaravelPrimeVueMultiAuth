@@ -64,7 +64,7 @@ class UserController extends Controller
         $user->save();
 
         $request->session()->flash('message', 'Tạo xong người dùng!');
-        return redirect('/users');
+        return redirect()->route('users.index');
     }
 
     /**
@@ -101,7 +101,7 @@ class UserController extends Controller
         $user->save();
 
         $request->session()->flash('message', 'Sửa xong người dùng!');
-        return redirect('/users');
+        return redirect()->route('users.index');
     }
 
     /**
@@ -117,7 +117,7 @@ class UserController extends Controller
 
         $user->delete();
         Session::flash('message', 'Xóa xong người dùng!');
-        return redirect('/users');
+        return redirect()->route('users.index');
     }
 
     public function bulkDelete(Request $request)
@@ -137,6 +137,6 @@ class UserController extends Controller
         }
 
         $request->session()->flash('message', 'Xóa xong người dùng!');
-        return redirect('/users');
+        return redirect()->route('users.index');
     }
 }

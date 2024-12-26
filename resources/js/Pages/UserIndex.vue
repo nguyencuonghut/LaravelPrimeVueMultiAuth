@@ -172,6 +172,9 @@ const page = usePage();
 const message = computed(() => page.props.auth.flash.message);
 
 defineProps({
+    errors: {
+        type: Object,
+    },
     users: Object,
     can: Object,
 });
@@ -217,26 +220,21 @@ const saveUser = () => {
                 toast.add({severity:'success', summary: 'Thành công', detail: message, life: 3000});
             },
             onError: () => {
-                form.clearErrors();
                 toast.add({severity: 'error', summary: 'Lỗi', detail: message, life: 3000});
             },
         });
     } else {
         // Edit this User
-        if(form?.name?.trim() && form?.email) {
-            // Edit this User
-            form.put(`users/${form.id}`, {
-                onSuccess: () => {
-                    form.reset();
-                    userDialog.value = false;
-                    toast.add({severity: 'success', summary: 'Thành công', detail: message, life: 3000});
-                },
-                onError: () => {
-                    form.clearErrors();
-                    toast.add({severity: 'error', summary: 'Lỗi', detail: message, life: 3000});
-                },
-            });
-        }
+        form.put(`users/${form.id}`, {
+            onSuccess: () => {
+                form.reset();
+                userDialog.value = false;
+                toast.add({severity: 'success', summary: 'Thành công', detail: message, life: 3000});
+            },
+            onError: () => {
+                toast.add({severity: 'error', summary: 'Lỗi', detail: message, life: 3000});
+            },
+        });
 
     }
 };
