@@ -163,14 +163,17 @@ import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import { useToast } from 'primevue/usetoast';
 import { router } from '@inertiajs/vue3';
+import { computed } from 'vue'
+import { usePage } from '@inertiajs/vue3'
+
+defineOptions({ inheritAttrs: false })
 
 const toast = useToast();
 const dt = ref();
+const page = usePage();
+const message = computed(() => page.props.auth.flash.message);
 
 defineProps({
-    errors: {
-        type: Object,
-    },
     users: Object,
     can: Object,
 });
@@ -224,7 +227,11 @@ const saveUser = () => {
                 onSuccess: () => {
                     form.reset();
                     userDialog.value = false;
-                    toast.add({severity:'success', summary: 'Successful', detail: 'Cập nhật thành công', life: 3000});
+                    toast.add({severity: 'success', summary: 'Thành công', detail: message, life: 3000});
+                },
+                onError: () => {
+                    form.clearErrors();
+                    toast.add({severity: 'error', summary: 'Lỗi', detail: message, life: 3000});
                 },
             });
         }

@@ -87,7 +87,8 @@ class UserController extends Controller
     {
         //Check authorize
         if ('Quản trị' != Auth::user()->role) {
-            return redirect('/users');
+            $request->session()->flash('message', 'Bạn không có quyền!');
+            return redirect()->back()->withErrors('Bạn không có quyền!');
         }
 
         $user->name = $request->name;
@@ -96,6 +97,7 @@ class UserController extends Controller
         $user->role = $request->role;
         $user->save();
 
+        $request->session()->flash('message', 'Sửa xong người dùng!');
         return redirect('/users');
     }
 
