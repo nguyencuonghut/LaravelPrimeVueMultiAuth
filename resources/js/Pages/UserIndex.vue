@@ -166,8 +166,6 @@ import { router } from '@inertiajs/vue3';
 import { computed } from 'vue'
 import { usePage } from '@inertiajs/vue3'
 
-defineOptions({ inheritAttrs: false })
-
 const toast = useToast();
 const dt = ref();
 const page = usePage();
@@ -216,7 +214,11 @@ const saveUser = () => {
             onSuccess: () => {
                 form.reset();
                 userDialog.value = false;
-                toast.add({severity:'success', summary: 'Successful', detail: 'Thêm mới thành công', life: 3000});
+                toast.add({severity:'success', summary: 'Thành công', detail: message, life: 3000});
+            },
+            onError: () => {
+                form.clearErrors();
+                toast.add({severity: 'error', summary: 'Lỗi', detail: message, life: 3000});
             },
         });
     } else {
@@ -253,11 +255,11 @@ const deleteUser = () => {
         onSuccess: () => {
             form.reset();
             deleteUserDialog.value = false;
-            toast.add({severity:'success', summary: 'Successful', detail: 'Xóa người dùng thành công', life: 3000});
+            toast.add({severity:'success', summary: 'Successful', detail: message, life: 3000});
         },
         onError: () => {
             deleteUserDialog.value = false;
-            toast.add({severity:'error', summary: 'Failed', detail: 'Bạn không có quyền xóa', life: 3000});
+            toast.add({severity:'error', summary: 'Failed', detail: message, life: 3000});
         },
     });
 };
@@ -282,12 +284,12 @@ const deleteSelectedUsers = () => {
         onSuccess: () => {
             deleteUsersDialog.value = false;
             selectedUsers.value = null;
-            toast.add({severity:'success', summary: 'Successful', detail: 'Xóa người dùng thành công', life: 3000});
+            toast.add({severity:'success', summary: 'Successful', detail: message, life: 3000});
         },
         onError: () => {
             deleteUsersDialog.value = false;
             selectedUsers.value = null;
-            toast.add({severity:'error', summary: 'Failed', detail: 'Bạn không có quyền xóa', life: 3000});
+            toast.add({severity:'error', summary: 'Failed', detail: message, life: 3000});
         },
     });
 };

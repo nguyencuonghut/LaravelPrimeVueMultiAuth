@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -49,7 +50,8 @@ class UserController extends Controller
     {
         //Check authorize
         if ('Quản trị' != Auth::user()->role) {
-            return redirect('/users');
+            $request->session()->flash('message', 'Bạn không có quyền!');
+            return redirect()->back()->withErrors('Bạn không có quyền!');
         }
 
         $user = new User();
@@ -61,6 +63,7 @@ class UserController extends Controller
         $user->role = $request->role;
         $user->save();
 
+        $request->session()->flash('message', 'Tạo xong người dùng!');
         return redirect('/users');
     }
 
@@ -108,10 +111,12 @@ class UserController extends Controller
     {
         //Check authorize
         if ('Quản trị' != Auth::user()->role) {
-            return redirect('/users');
+            $request->session()->flash('message', 'Bạn không có quyền!');
+            return redirect()->back()->withErrors('Bạn không có quyền!');
         }
 
         $user->delete();
+        Session::flash('message', 'Xóa xong người dùng!');
         return redirect('/users');
     }
 
@@ -119,7 +124,8 @@ class UserController extends Controller
     {
         //Check authorize
         if ('Quản trị' != Auth::user()->role) {
-            return redirect('/users');
+            $request->session()->flash('message', 'Bạn không có quyền!');
+            return redirect()->back()->withErrors('Bạn không có quyền!');
         }
 
         $users = $request->users;
@@ -130,6 +136,7 @@ class UserController extends Controller
             }
         }
 
+        $request->session()->flash('message', 'Xóa xong người dùng!');
         return redirect('/users');
     }
 }
