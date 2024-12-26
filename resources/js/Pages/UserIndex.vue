@@ -16,7 +16,7 @@
             </template>
         </Toolbar>
 
-        <DataTable v-model:filters="filters" v-model:selection="selectedUsers" :value="users" paginator :rows="10" dataKey="id" filterDisplay="menu"
+        <DataTable ref="dt" v-model:filters="filters" v-model:selection="selectedUsers" :value="users" paginator :rows="10" dataKey="id" filterDisplay="menu"
             :globalFilterFields="['name', 'email', 'role', 'status']">
             <template #header>
                 <div class="flex justify-between">
