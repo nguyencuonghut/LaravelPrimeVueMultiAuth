@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
-class UserController extends Controller
+class AdminUserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -111,7 +111,7 @@ class UserController extends Controller
     {
         //Check authorize
         if ('Quản trị' != Auth::user()->role) {
-            $request->session()->flash('message', 'Bạn không có quyền!');
+            Session::flash('message', 'Bạn không có quyền!');
             return redirect()->back()->withErrors('Bạn không có quyền!');
         }
 

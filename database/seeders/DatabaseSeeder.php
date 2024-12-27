@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'nguyencuonghut55@gmail.com',
             'password' => bcrypt('Hongha@123'),
             'status' => 'On',
-            'role' => 'Quản trị',
         ]);
         $this->call([
             AdminsTableSeeder::class,

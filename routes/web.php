@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AdminAdminController;
 use App\Http\Controllers\AdminHomeController;
 use App\Http\Controllers\AdminLoginController;
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
@@ -19,10 +21,6 @@ Route::group(['middleware'=>'auth:web'], function() {
 Route::group(['middleware'=>'auth:web'], function() {
     //Home routes
     Route::get('/', [HomeController::class, 'home'])->name('home');
-
-    //User routes
-    Route::post('users/bulkDelete', [UserController::class, 'bulkDelete']);
-    Route::resource('users', UserController::class);
 });
 
 
@@ -36,5 +34,11 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('/', [AdminHomeController::class, 'home'])->name('home');
     //Logout
     Route::post('logout', [AdminLoginController::class, 'handleLogout'])->name('logout');
+    //User routes
+    Route::post('users/bulkDelete', [AdminUserController::class, 'bulkDelete']);
+    Route::resource('users', AdminUserController::class);
+    //Admin routes
+    Route::post('admins/bulkDelete', [AdminAdminController::class, 'bulkDelete']);
+    Route::resource('admins', AdminAdminController::class);
 });
 
