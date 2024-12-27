@@ -17,10 +17,13 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Tony Nguyen',
-            'email' => 'nguyenvancuong@honghafeed.com.vn',
+            'email' => 'nguyencuonghut55@gmail.com',
             'password' => bcrypt('Hongha@123'),
             'status' => 'On',
             'role' => 'Quản trị',
+        ]);
+        $this->call([
+            AdminsTableSeeder::class,
         ]);
     }
 }

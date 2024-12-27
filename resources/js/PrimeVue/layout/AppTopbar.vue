@@ -8,12 +8,18 @@ import { usePage } from '@inertiajs/vue3'
 
 const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout();
 
+const page = usePage();
+const user_name = computed(() => page.props.auth.user.user_name);
+const is_admin = computed(() => page.props.is_admin);
+
 const logout = () => {
-    router.post('/logout')
+    if (is_admin.value) {
+        router.post('admin/logout')
+    } else {
+        router.post('logout')
+    }
 };
 
-const page = usePage();
-const user_name = computed(() => page.props.auth.user.user_name)
 </script>
 
 <template>
