@@ -17,16 +17,16 @@ class AdminAdminController extends Controller
      */
     public function index()
     {
-        $admins = Admin::orderBy('id', 'desc')->get()->map(function ($user) {
+        $admins = Admin::orderBy('id', 'desc')->with('role')->get()->map(function ($user) {
             return collect($user)->only(['id', 'name', 'email', 'status', 'role']);
         });
 
         $can = [
-            'create_user' => 'Quản trị' ==  Auth::user()->role,
-            'update_user' => 'Quản trị' ==  Auth::user()->role,
-            'delete_user' => 'Quản trị' ==  Auth::user()->role,
-            'import_user' => 'Quản trị' ==  Auth::user()->role,
-            'export_user' => 'Quản trị' ==  Auth::user()->role,
+            'create_user' => 'Quản trị' ==  Auth::user()->role->name,
+            'update_user' => 'Quản trị' ==  Auth::user()->role->name,
+            'delete_user' => 'Quản trị' ==  Auth::user()->role->name,
+            'import_user' => 'Quản trị' ==  Auth::user()->role->name,
+            'export_user' => 'Quản trị' ==  Auth::user()->role->name,
         ];
 
         return Inertia::render('AdminIndex', [

@@ -49,7 +49,7 @@
             </Column>
             <Column header="Vai trò" field="role" sortable :filterMenuStyle="{ width: '14rem' }" style="min-width: 12rem">
                 <template #body="{ data }">
-                    <Tag :value="data.role" :severity="getRoleSeverity(data.role)" />
+                    <Tag :value="data.role.name" :severity="getRoleSeverity(data.role.name)" />
                 </template>
                 <template #filter="{ filterModel }">
                     <Select v-model="filterModel.value" :options="roles" placeholder="Chọn" showClear>
@@ -294,7 +294,7 @@ const deleteSelectedUsers = () => {
 
 const selectedUsers = ref();
 const filters = ref();
-const roles = ref(['Quản trị', 'Người dùng']);
+const roles = ref(['Quản trị', 'Nhân viên mua hàng', 'Nhân viên kiểm soát', 'Trưởng phòng mua hàng', 'Giám đốc']);
 const statuses = ref(['On', 'Off']);
 
 const initFilters = () => {
@@ -325,11 +325,20 @@ const getStatusSeverity = (status) => {
 
 const getRoleSeverity = (status) => {
     switch (status) {
-        case 'Người quản trị':
-            return 'success';
+        case 'Quản trị':
+            return 'danger';
 
-        case 'Người dùng':
+        case 'Nhân viên mua hàng':
+            return 'secondary';
+
+        case 'Nhân viên kiểm soát':
+            return 'warn';
+
+        case 'Trưởng phòng mua hàng':
             return 'info';
+
+        case 'Giám đốc':
+            return 'success';
     }
 };
 </script>
