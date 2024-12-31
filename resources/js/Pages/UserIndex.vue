@@ -104,7 +104,7 @@
                 </div>
                 <div>
                     <label for="supplier" class="block font-bold mb-3 required-field">Công ty</label>
-                    <Select v-model="form.supplier" @change="form.validate('supplier')" :options="suppliers" class="w-full" placeholder="Chọn công ty" />
+                    <Select v-model="form.supplier" @change="form.validate('supplier')" :options="suppliers" filter class="w-full" placeholder="Chọn công ty" />
                     <small v-if="form.invalid('supplier')" class="text-red-500">{{ form.errors.supplier }}</small>
                 </div>
                 <div>
