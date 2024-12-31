@@ -49,7 +49,7 @@
             </Column>
             <Column header="Vai trò" field="role" sortable :filterMenuStyle="{ width: '14rem' }" style="min-width: 12rem">
                 <template #body="{ data }">
-                    <Tag :value="data.role.name" :severity="getRoleSeverity(data.role.name)" />
+                    <Tag :value="data.role" :severity="getRoleSeverity(data.role)" />
                 </template>
                 <template #filter="{ filterModel }">
                     <Select v-model="filterModel.value" :options="roles" placeholder="Chọn" showClear>

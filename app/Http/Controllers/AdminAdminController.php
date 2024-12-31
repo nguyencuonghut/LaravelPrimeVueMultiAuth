@@ -18,7 +18,13 @@ class AdminAdminController extends Controller
     public function index()
     {
         $admins = Admin::orderBy('id', 'desc')->with('role')->get()->map(function ($user) {
-            return collect($user)->only(['id', 'name', 'email', 'status', 'role']);
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'status' => $user->status,
+                'role' => $user->role->name,
+            ];
         });
 
         $can = [
