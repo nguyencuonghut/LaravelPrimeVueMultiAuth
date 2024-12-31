@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminAdminController;
 use App\Http\Controllers\AdminHomeController;
 use App\Http\Controllers\AdminLoginController;
+use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
@@ -40,5 +41,8 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     //Admin routes
     Route::post('admins/bulkDelete', [AdminAdminController::class, 'bulkDelete']);
     Route::resource('admins', AdminAdminController::class);
+    //Supplier routes
+    Route::post('suppliers/bulkDelete', [AdminSupplierController::class, 'bulkDelete']);
+    Route::resource('suppliers', AdminSupplierController::class);
 });
 

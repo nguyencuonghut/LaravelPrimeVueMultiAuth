@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'On',
         ]);
         $this->call([
+            SuppliersTableSeeder::class,
             RolesTableSeeder::class,
             AdminsTableSeeder::class,
         ]);
