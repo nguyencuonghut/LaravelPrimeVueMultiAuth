@@ -17,7 +17,7 @@
         </Toolbar>
 
         <DataTable ref="dt" v-model:filters="filters" v-model:selection="selectedUsers" :value="users" paginator :rows="10" dataKey="id" filterDisplay="menu"
-            :globalFilterFields="['name', 'email', 'role', 'status']"
+            :globalFilterFields="['name', 'email', 'supplier', 'status']"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             :rowsPerPageOptions="[5, 10, 25]"
             currentPageReportTemplate="Hiển thị từ {first} đến {last} trên tổng số {totalRecords} nhà cung cấp"
@@ -51,15 +51,15 @@
                     <InputText v-model="filterModel.value" type="text" placeholder="Tìm theo email" />
                 </template>
             </Column>
-            <Column field="role" header="Công ty" sortable style="min-width: 14rem">
+            <Column field="supplier" header="Công ty" sortable style="min-width: 14rem">
                 <template #body="{ data }">
-                    {{ data.supplier.name }}
+                    {{ data.supplier }}
                 </template>
                 <template #filter="{ filterModel }">
                     <InputText v-model="filterModel.value" type="text" placeholder="Tìm theo công ty" />
                 </template>
             </Column>
-            <Column header="Trạng thái" field="status" sortable :filterMenuStyle="{ width: '14rem' }" style="min-width: 12rem">
+            <Column header="Trạng thái" field="status" sortable :filterMenuStyle="{ width: '14rem' }" style="min-width: 5rem">
                 <template #body="{ data }">
                     <Tag :value="data.status" :severity="getStatusSeverity(data.status)" />
                 </template>
@@ -71,7 +71,7 @@
                     </Select>
                 </template>
             </Column>
-            <Column  v-if="can.update_user || can.delete_user" :exportable="false" style="min-width: 12rem">
+            <Column  v-if="can.update_user || can.delete_user" :exportable="false" style="min-width: 10rem">
                 <template #body="slotProps">
                     <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editUser(slotProps.data)" />
                     <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmDeleteUser(slotProps.data)" />
@@ -104,7 +104,7 @@
                 </div>
                 <div>
                     <label for="supplier" class="block font-bold mb-3 required-field">Công ty</label>
-                    <Select v-model="form.supplier" @change="form.validate('supplier')" :options="suppliers" optionLabel="name" class="w-full" placeholder="Chọn công ty" />
+                    <Select v-model="form.supplier" @change="form.validate('supplier')" :options="suppliers" class="w-full" placeholder="Chọn công ty" />
                     <small v-if="form.invalid('supplier')" class="text-red-500">{{ form.errors.supplier }}</small>
                 </div>
                 <div>
@@ -302,7 +302,7 @@ const initFilters = () => {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
         email: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-        supplier: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+        supplier: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
         status: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
     };
 };

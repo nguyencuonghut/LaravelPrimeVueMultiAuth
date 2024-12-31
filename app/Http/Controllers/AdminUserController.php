@@ -25,11 +25,7 @@ class AdminUserController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'status' => $user->status,
-                'supplier' => [
-                    'id' => $user->supplier->id,
-                    'code' => $user->supplier->code,
-                    'name' => $user->supplier->name,
-                ],
+                'supplier' => $user->supplier->code . ' - ' . $user->supplier->name,
             ];
         });
 
@@ -42,11 +38,7 @@ class AdminUserController extends Controller
         ];
 
         $suppliers = Supplier::where('status', 'On')->orderBy('id', 'desc')->get()->map(function ($supplier) {
-            return [
-                'id' => $supplier->id,
-                'code' => $supplier->code,
-                'name' => $supplier->name,
-            ];
+            return $supplier->code . ' - ' . $supplier->name;
         });
 
         return Inertia::render('UserIndex', [
@@ -81,7 +73,13 @@ class AdminUserController extends Controller
         $user->email = $request->email;
         $user->status = $request->status;
         $user->password = bcrypt($request->password);
-        $user->supplier_id = $request->supplier['id'];
+
+        $supplier_arr = explode(' - ', $request->supplier);
+        $supplier_code = $supplier_arr[0];
+        $supplier_name   = $supplier_arr[1];
+        $supplier = Supplier::where('code', $supplier_code)->where('name', $supplier_name)->first();
+
+        $user->supplier_id = $supplier->id;
         $user->save();
 
         $request->session()->flash('message', 'Tạo xong người dùng!');
@@ -118,7 +116,13 @@ class AdminUserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->status = $request->status;
-        $user->supplier_id = $request->supplier['id'];
+
+        $supplier_arr = explode(' - ', $request->supplier);
+        $supplier_code = $supplier_arr[0];
+        $supplier_name   = $supplier_arr[1];
+        $supplier = Supplier::where('code', $supplier_code)->where('name', $supplier_name)->first();
+
+        $user->supplier_id = $supplier->id;
         $user->save();
 
         $request->session()->flash('message', 'Sửa xong người dùng!');
