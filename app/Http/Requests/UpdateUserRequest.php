@@ -24,7 +24,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$this->user->id,
-            'role' => 'required',
+            'supplier' => 'required',
             'status' => 'required',
         ];
     }
@@ -36,7 +36,7 @@ class UpdateUserRequest extends FormRequest
             'email.required' => 'Bạn phải nhập email.',
             'email.email' => 'Email sai định dạng.',
             'email.unique' => 'Email đã tồn tại.',
-            'role.required' => 'Bạn phải nhập vai trò.',
+            'supplier.required' => 'Bạn phải nhập vai trò.',
             'status.required' => 'Bạn phải nhập trạng thái.',
         ];
     }

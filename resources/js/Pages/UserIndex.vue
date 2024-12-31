@@ -17,7 +17,11 @@
         </Toolbar>
 
         <DataTable ref="dt" v-model:filters="filters" v-model:selection="selectedUsers" :value="users" paginator :rows="10" dataKey="id" filterDisplay="menu"
-            :globalFilterFields="['name', 'email', 'role', 'status']">
+            :globalFilterFields="['name', 'email', 'role', 'status']"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            :rowsPerPageOptions="[5, 10, 25]"
+            currentPageReportTemplate="Hiển thị từ {first} đến {last} trên tổng số {totalRecords} nhà cung cấp"
+        >
             <template #header>
                 <div class="flex justify-between">
                     <Button type="button" icon="pi pi-filter-slash" label="Clear" outlined @click="clearFilter()" />
@@ -47,16 +51,12 @@
                     <InputText v-model="filterModel.value" type="text" placeholder="Tìm theo email" />
                 </template>
             </Column>
-            <Column header="Vai trò" field="role" sortable :filterMenuStyle="{ width: '14rem' }" style="min-width: 12rem">
+            <Column field="role" header="Công ty" sortable style="min-width: 14rem">
                 <template #body="{ data }">
-                    <Tag :value="data.role" :severity="getRoleSeverity(data.role)" />
+                    {{ data.supplier.name }}
                 </template>
                 <template #filter="{ filterModel }">
-                    <Select v-model="filterModel.value" :options="roles" placeholder="Chọn" showClear>
-                        <template #option="slotProps">
-                            <Tag :value="slotProps.option" :severity="getRoleSeverity(slotProps.option)" />
-                        </template>
-                    </Select>
+                    <InputText v-model="filterModel.value" type="text" placeholder="Tìm theo công ty" />
                 </template>
             </Column>
             <Column header="Trạng thái" field="status" sortable :filterMenuStyle="{ width: '14rem' }" style="min-width: 12rem">
@@ -103,9 +103,9 @@
                     <small v-if="form.invalid('password_confirmation')" class="text-red-500">{{ form.errors.password_confirmation }}</small>
                 </div>
                 <div>
-                    <label for="role" class="block font-bold mb-3 required-field">Vai trò</label>
-                    <Select v-model="form.role" @change="form.validate('role')" :options="roles" class="w-full" placeholder="Chọn vai trò" />
-                    <small v-if="form.invalid('role')" class="text-red-500">{{ form.errors.role }}</small>
+                    <label for="supplier" class="block font-bold mb-3 required-field">Công ty</label>
+                    <Select v-model="form.supplier" @change="form.validate('supplier')" :options="suppliers" optionLabel="name" class="w-full" placeholder="Chọn công ty" />
+                    <small v-if="form.invalid('supplier')" class="text-red-500">{{ form.errors.supplier }}</small>
                 </div>
                 <div>
                     <span class="block font-bold mb-4 required-field">Trạng thái</span>
@@ -177,18 +177,19 @@ defineProps({
     },
     users: Object,
     can: Object,
+    suppliers: Object,
 });
 
 const userDialog = ref(false);
 const deleteUserDialog = ref(false);
 const deleteUsersDialog = ref(false);
-const form = useForm('post', '/users', {
+const form = useForm('post', 'users', {
     id: '',
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
-    role: '',
+    supplier: '',
     status: '',
 });
 const submitted = ref(false);
@@ -266,7 +267,7 @@ const setUser = (usr) => {
     form.id = usr.id;
     form.name = usr.name;
     form.email = usr.email;
-    form.role = usr.role;
+    form.supplier = usr.supplier;
     form.status = usr.status;
 }
 
@@ -294,7 +295,6 @@ const deleteSelectedUsers = () => {
 
 const selectedUsers = ref();
 const filters = ref();
-const roles = ref(['Quản trị', 'Người dùng']);
 const statuses = ref(['On', 'Off']);
 
 const initFilters = () => {
@@ -302,7 +302,7 @@ const initFilters = () => {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
         email: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-        role: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+        supplier: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
         status: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
     };
 };
@@ -320,16 +320,6 @@ const getStatusSeverity = (status) => {
 
         case 'Off':
             return 'danger';
-    }
-};
-
-const getRoleSeverity = (status) => {
-    switch (status) {
-        case 'Người quản trị':
-            return 'success';
-
-        case 'Người dùng':
-            return 'info';
     }
 };
 </script>

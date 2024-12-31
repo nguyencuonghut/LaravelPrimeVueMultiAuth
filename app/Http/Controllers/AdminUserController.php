@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,21 +18,41 @@ class AdminUserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('id', 'desc')->get()->map(function ($user) {
-            return collect($user)->only(['id', 'name', 'email', 'status', 'role']);
+        $users = User::orderBy('id', 'desc')->with('supplier')->get()->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'code' => $user->code,
+                'name' => $user->name,
+                'email' => $user->email,
+                'status' => $user->status,
+                'supplier' => [
+                    'id' => $user->supplier->id,
+                    'code' => $user->supplier->code,
+                    'name' => $user->supplier->name,
+                ],
+            ];
         });
 
         $can = [
-            'create_user' => 'Quản trị' ==  Auth::user()->role,
-            'update_user' => 'Quản trị' ==  Auth::user()->role,
-            'delete_user' => 'Quản trị' ==  Auth::user()->role,
-            'import_user' => 'Quản trị' ==  Auth::user()->role,
-            'export_user' => 'Quản trị' ==  Auth::user()->role,
+            'create_user' => 'Quản trị' ==  Auth::user()->role->name,
+            'update_user' => 'Quản trị' ==  Auth::user()->role->name,
+            'delete_user' => 'Quản trị' ==  Auth::user()->role->name,
+            'import_user' => 'Quản trị' ==  Auth::user()->role->name,
+            'export_user' => 'Quản trị' ==  Auth::user()->role->name,
         ];
+
+        $suppliers = Supplier::where('status', 'On')->orderBy('id', 'desc')->get()->map(function ($supplier) {
+            return [
+                'id' => $supplier->id,
+                'code' => $supplier->code,
+                'name' => $supplier->name,
+            ];
+        });
 
         return Inertia::render('UserIndex', [
             'users' => $users,
             'can' => $can,
+            'suppliers' => $suppliers,
         ]);
     }
 
@@ -49,7 +70,7 @@ class AdminUserController extends Controller
     public function store(StoreUserRequest $request)
     {
         //Check authorize
-        if ('Quản trị' != Auth::user()->role) {
+        if ('Quản trị' != Auth::user()->role->name) {
             $request->session()->flash('message', 'Bạn không có quyền!');
             return redirect()->back()->withErrors('Bạn không có quyền!');
         }
@@ -60,11 +81,11 @@ class AdminUserController extends Controller
         $user->email = $request->email;
         $user->status = $request->status;
         $user->password = bcrypt($request->password);
-        $user->role = $request->role;
+        $user->supplier_id = $request->supplier['id'];
         $user->save();
 
         $request->session()->flash('message', 'Tạo xong người dùng!');
-        return redirect()->route('users.index');
+        return redirect()->route('admin.users.index');
     }
 
     /**
@@ -89,7 +110,7 @@ class AdminUserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         //Check authorize
-        if ('Quản trị' != Auth::user()->role) {
+        if ('Quản trị' != Auth::user()->role->name) {
             $request->session()->flash('message', 'Bạn không có quyền!');
             return redirect()->back()->withErrors('Bạn không có quyền!');
         }
@@ -97,11 +118,11 @@ class AdminUserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->status = $request->status;
-        $user->role = $request->role;
+        $user->supplier_id = $request->supplier['id'];
         $user->save();
 
         $request->session()->flash('message', 'Sửa xong người dùng!');
-        return redirect()->route('users.index');
+        return redirect()->route('admin.users.index');
     }
 
     /**
@@ -110,20 +131,20 @@ class AdminUserController extends Controller
     public function destroy(User $user)
     {
         //Check authorize
-        if ('Quản trị' != Auth::user()->role) {
+        if ('Quản trị' != Auth::user()->role->name) {
             Session::flash('message', 'Bạn không có quyền!');
             return redirect()->back()->withErrors('Bạn không có quyền!');
         }
 
         $user->delete();
         Session::flash('message', 'Xóa xong người dùng!');
-        return redirect()->route('users.index');
+        return redirect()->route('admin.users.index');
     }
 
     public function bulkDelete(Request $request)
     {
         //Check authorize
-        if ('Quản trị' != Auth::user()->role) {
+        if ('Quản trị' != Auth::user()->role->name) {
             $request->session()->flash('message', 'Bạn không có quyền!');
             return redirect()->back()->withErrors('Bạn không có quyền!');
         }
@@ -137,6 +158,6 @@ class AdminUserController extends Controller
         }
 
         $request->session()->flash('message', 'Xóa xong người dùng!');
-        return redirect()->route('users.index');
+        return redirect()->route('admin.users.index');
     }
 }

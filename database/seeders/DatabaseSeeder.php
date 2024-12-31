@@ -13,6 +13,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            SuppliersTableSeeder::class,
+            RolesTableSeeder::class,
+            AdminsTableSeeder::class,
+        ]);
+
         User::factory(100)->create();
 
         User::factory()->create([
@@ -20,11 +26,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'nguyencuonghut55@gmail.com',
             'password' => bcrypt('Hongha@123'),
             'status' => 'On',
-        ]);
-        $this->call([
-            SuppliersTableSeeder::class,
-            RolesTableSeeder::class,
-            AdminsTableSeeder::class,
+            'supplier_id' => 1,
         ]);
     }
 }
