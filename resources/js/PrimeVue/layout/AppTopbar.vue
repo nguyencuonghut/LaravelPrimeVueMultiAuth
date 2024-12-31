@@ -14,7 +14,7 @@ const is_admin = computed(() => page.props.is_admin);
 
 const logout = () => {
     if (is_admin.value) {
-        router.post('admin/logout')
+        router.post('/admin/logout')
     } else {
         router.post('logout')
     }
