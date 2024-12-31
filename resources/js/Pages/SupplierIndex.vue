@@ -17,7 +17,7 @@
         </Toolbar>
 
         <DataTable ref="dt" v-model:filters="filters" v-model:selection="selectedSuppliers" :value="suppliers" paginator :rows="10" dataKey="id" filterDisplay="menu"
-            :globalFilterFields="['code', 'name', 'status']"
+            :globalFilterFields="['code', 'name', 'users', 'status']"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             :rowsPerPageOptions="[5, 10, 25]"
             currentPageReportTemplate="Hiển thị từ {first} đến {last} trên tổng số {totalRecords} nhà cung cấp"
@@ -49,6 +49,14 @@
                 </template>
                 <template #filter="{ filterModel }">
                     <InputText v-model="filterModel.value" type="text" placeholder="Tìm theo tên" />
+                </template>
+            </Column>
+            <Column field="users" header="Tài khoản" sortable style="min-width: 14rem">
+                <template #body="{ data }">
+                    {{ data.users }}
+                </template>
+                <template #filter="{ filterModel }">
+                    <InputText v-model="filterModel.value" type="text" placeholder="Tìm theo tài khoản" />
                 </template>
             </Column>
             <Column header="Trạng thái" field="status" sortable :filterMenuStyle="{ width: '14rem' }" style="min-width: 12rem">
@@ -274,6 +282,7 @@ const initFilters = () => {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         code: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
         name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+        users: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
         status: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
     };
 };

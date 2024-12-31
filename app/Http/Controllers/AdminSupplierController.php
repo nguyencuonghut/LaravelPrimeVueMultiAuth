@@ -18,7 +18,24 @@ class AdminSupplierController extends Controller
     public function index()
     {
         $suppliers = Supplier::orderBy('id', 'desc')->get()->map(function ($supplier) {
-            return collect($supplier)->only(['id', 'code', 'name', 'status']);
+            $users_str = '';
+            $i = 0;
+            $length = count($supplier->users);
+            if ($length) {
+                foreach ($supplier->users as $user) {
+                    $users_str .= $user->email;
+                    if(++$i !== $length) {
+                        $users_str .= ', ';
+                    }
+                }
+            }
+            return [
+                'id' => $supplier->id,
+                'code' => $supplier->code,
+                'name' => $supplier->name,
+                'users' => $users_str,
+                'status' => $supplier->status,
+            ];
         });
 
         $can = [
