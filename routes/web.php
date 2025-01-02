@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminAdminController;
 use App\Http\Controllers\AdminHomeController;
 use App\Http\Controllers\AdminLoginController;
+use App\Http\Controllers\AdminMaterialController;
 use App\Http\Controllers\AdminSupplierController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\HomeController;
@@ -44,5 +45,8 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     //Supplier routes
     Route::post('suppliers/bulkDelete', [AdminSupplierController::class, 'bulkDelete']);
     Route::resource('suppliers', AdminSupplierController::class);
+    //Material routes
+    Route::post('materials/bulkDelete', [AdminMaterialController::class, 'bulkDelete']);
+    Route::resource('materials', AdminMaterialController::class);
 });
 

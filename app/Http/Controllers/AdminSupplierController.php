@@ -105,7 +105,7 @@ class AdminSupplierController extends Controller
             return redirect()->back()->withErrors('Bạn không có quyền!');
         }
 
-        $supplier->name = $request->name;
+        $supplier->code = $request->code;
         $supplier->name = $request->name;
         $supplier->status = $request->status;
         $supplier->save();
