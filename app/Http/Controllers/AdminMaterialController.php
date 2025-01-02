@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMaterialRequest;
 use App\Http\Requests\UpdateMaterialRequest;
 use App\Models\Material;
+use App\Models\Quality;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -18,11 +19,13 @@ class AdminMaterialController extends Controller
     public function index()
     {
         $materials = Material::orderBy('id', 'desc')->get()->map(function ($material) {
+            $quality = Quality::where('material_id', $material->id)->where('status', 'On')->first();
             return [
                 'id' => $material->id,
                 'code' => $material->code,
                 'name' => $material->name,
                 'status' => $material->status,
+                'quality' => $quality ? $quality->detail : '',
             ];
         });
 

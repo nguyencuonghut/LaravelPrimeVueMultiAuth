@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             RolesTableSeeder::class,
             AdminsTableSeeder::class,
             MaterialsTableSeeder::class,
+            QualitiesTableSeeder::class,
         ]);
 
         User::factory(100)->create();

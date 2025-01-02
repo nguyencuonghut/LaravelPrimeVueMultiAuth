@@ -51,6 +51,14 @@
                     <InputText v-model="filterModel.value" type="text" placeholder="Tìm theo tên" />
                 </template>
             </Column>
+            <Column field="quality" header="Chất lượng" sortable style="min-width: 14rem;">
+                <template #body="{ data }">
+                    <div style="white-space: pre-line;">{{ data.quality }}</div>
+                </template>
+                <template #filter="{ filterModel }">
+                    <InputText v-model="filterModel.value" type="text" placeholder="Tìm chất lượng" />
+                </template>
+            </Column>
             <Column header="Trạng thái" field="status" sortable :filterMenuStyle="{ width: '14rem' }" style="min-width: 12rem">
                 <template #body="{ data }">
                     <Tag :value="data.status" :severity="getStatusSeverity(data.status)" />
