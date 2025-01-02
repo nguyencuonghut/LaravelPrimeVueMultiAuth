@@ -15,6 +15,7 @@ const model = ref([
             { label: 'Người dùng', icon: 'pi pi-fw pi-user', to: '/admin/users' },
             { label: 'Nhà cung cấp', icon: 'pi pi-fw pi-table', to: '/admin/suppliers' },
             { label: 'Hàng hóa', icon: 'pi pi-fw pi-server', to: '/admin/materials' },
+            { label: 'Chất lượng', icon: 'pi pi-fw pi-check-circle', to: '/admin/qualities' },
         ]
     },
 ]);
