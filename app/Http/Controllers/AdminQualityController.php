@@ -8,7 +8,6 @@ use App\Models\Material;
 use App\Models\Quality;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
@@ -116,7 +115,6 @@ class AdminQualityController extends Controller
         $material_name   = $material_arr[1];
         $material = Material::where('code', $material_code)->where('name', $material_name)->first();
         $on_qualities = Quality::where('material_id', $material->id)->where('status', 'On')->get();
-        Log::error($on_qualities);
         //1 Material has only 1 Quality which status is On
         if ($on_qualities->count()
             && 'On' == $request->status) {
