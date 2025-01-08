@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminMaterialController;
 use App\Http\Controllers\AdminQualityController;
 use App\Http\Controllers\AdminSupplierController;
+use App\Http\Controllers\AdminTenderController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
@@ -52,5 +53,7 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     //Quality routes
     Route::post('qualities/bulkDelete', [AdminQualityController::class, 'bulkDelete']);
     Route::resource('qualities', AdminQualityController::class);
+    //Tender routes
+    Route::resource('tenders', AdminTenderController::class);
 });
 
