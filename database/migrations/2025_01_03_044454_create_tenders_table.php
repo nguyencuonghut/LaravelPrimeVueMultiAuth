@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();//Mã
             $table->string('title');//Tiêu đề
+            $table->foreignId('material_id')->constrained('materials')->onDelete('cascade');//Hàng hóa
+            $table->foreignId('quality_id')->constrained('qualities')->onDelete('cascade');//Chất lượng tại thời điểm chọn hàng hóa
             $table->text('packing')->nullable();//Quy cách
             $table->text('origin')->nullable();//Xuất xứ
             $table->text('delivery_condition');//Điều kiện giao hàng

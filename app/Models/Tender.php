@@ -9,6 +9,8 @@ class Tender extends Model
     protected $fillable = [
         'code',
         'title',
+        'material_id',
+        'quality_id',
         'packing',
         'origin',
         'delivery_condition',

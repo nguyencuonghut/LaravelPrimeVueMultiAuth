@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTenderRequest;
 use App\Models\Admin;
+use App\Models\Material;
+use App\Models\Quality;
+use App\Models\Quantity;
 use App\Models\Tender;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
@@ -69,8 +71,14 @@ class AdminTenderController extends Controller
             'delete_tender' => 'Nhân viên mua hàng' ==  Auth::user()->role->name || 'Quản trị' ==  Auth::user()->role->name,
             'export_tender' => 'Nhân viên mua hàng' ==  Auth::user()->role->name || 'Quản trị' ==  Auth::user()->role->name,
         ];
+
+        //TODO: chỉ lấy các Material có Quality status On
+        $materials = Material::orderBy('code', 'asc')->get()->map(function ($material) {
+            return $material->code . ' - ' . $material->name;
+        });
         return Inertia::render('TenderCreate', [
             'can' => $can,
+            'materials' => $materials,
         ]);
     }
 
@@ -86,9 +94,21 @@ class AdminTenderController extends Controller
             return redirect()->back()->withErrors('Bạn không có quyền!');
         }
 
+        //Get the Material
+        $material_arr = explode(' - ', $request->material);
+        $material_code = $material_arr[0];
+        $material_name   = $material_arr[1];
+        $material = Material::where('code', $material_code)->where('name', $material_name)->first();
+
+        //Get the current Quality of this Material
+        $quality = Quality::where('material_id', $material->id)->where('status', 'On')->first();
+
+        //Create new Tender
         $tender = new Tender();
-        $tender->code = '2025/01/06/' . rand(1, 1000);
+        $tender->code = $material->code . '-'. Carbon::now()->format('YmdHi');
         $tender->title = $request->title;
+        $tender->material_id = $material->id;
+        $tender->quality_id = $quality->id;
         $tender->packing = $request->packing;
         $tender->origin = $request->origin;
         $tender->delivery_condition = $request->delivery_condition;
@@ -101,6 +121,17 @@ class AdminTenderController extends Controller
         $tender->creator_id = Auth::user()->id;
         $tender->status = 'Mở';
         $tender->save();
+
+        //Create Qualities
+        foreach ($request->quantities as $item) {
+            $quantity = [
+                'tender_id' => $tender->id,
+                'qty' => $item['qty'],
+                'unit' => $item['unit'],
+                'delivery_time' => $item['delivery_time'],
+            ];
+            Quantity::create($quantity);
+        }
 
         $request->session()->flash('message', 'Tạo xong bộ thầu!');
         return redirect()->route('admin.tenders.index');
