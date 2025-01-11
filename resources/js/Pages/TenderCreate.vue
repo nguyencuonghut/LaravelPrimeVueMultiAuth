@@ -15,16 +15,16 @@
                 </div>
                 <div>
                     <label for="material" class="block font-bold mb-3 required-field">Hàng hóa</label>
-                    <Select v-model="form.material" @change="form.validate('material')" :options="materials" filter class="w-full" placeholder="Chọn hàng hóa" />
+                    <Select v-model="form.material" @change="form.validate('material')" :options="materials" :invalid="form.invalid('material')" filter class="w-full" placeholder="Chọn hàng hóa" />
                     <small v-if="form.invalid('material')" class="text-red-500">{{ form.errors.material }}</small>
                 </div>
                 <div>
                     <label for="origin" class="block font-bold mb-3">Xuất xứ</label>
-                    <InputText id="origin" v-model="form.origin" @change="form.validate('origin')" autofocus :invalid="submitted && !form.origin" fluid />
+                    <InputText id="origin" v-model="form.origin" @change="form.validate('origin')" autofocus fluid />
                 </div>
                 <div>
                     <label for="packing" class="block font-bold mb-3">Đóng gói</label>
-                    <InputText id="packing" v-model="form.packing" @change="form.validate('packing')" autofocus :invalid="submitted && !form.packing" fluid />
+                    <InputText id="packing" v-model="form.packing" @change="form.validate('packing')" autofocus fluid />
                 </div>
             </div>
 
@@ -32,15 +32,15 @@
             <div class="grid grid-cols-3 gap-4 mt-6">
                 <div>
                     <label for="certificate" class="block font-bold mb-3">Chứng từ</label>
-                    <InputText id="certificate" v-model="form.certificate" @change="form.validate('certificate')" autofocus :invalid="submitted && !form.certificate" fluid />
+                    <InputText id="certificate" v-model="form.certificate" @change="form.validate('certificate')" autofocus fluid />
                 </div>
                 <div>
                     <label for="freight_charge" class="block font-bold mb-3">Cước vận tải</label>
-                    <InputText id="freight_charge" v-model="form.freight_charge" @change="form.validate('freight_charge')" autofocus :invalid="submitted && !form.freight_charge" fluid />
+                    <InputText id="freight_charge" v-model="form.freight_charge" @change="form.validate('freight_charge')" autofocus fluid />
                 </div>
                 <div>
                     <label for="other_term" class="block font-bold mb-3">Điều khoản khác</label>
-                    <InputText id="other_term" v-model="form.other_term" @change="form.validate('other_term')" autofocus :invalid="submitted && !form.other_term" fluid />
+                    <InputText id="other_term" v-model="form.other_term" @change="form.validate('other_term')" autofocus fluid />
                 </div>
             </div>
 
@@ -57,12 +57,12 @@
                 </div>
                 <div>
                     <label for="start_time" class="block font-bold mb-3 required-field">Bắt đầu</label>
-                    <DatePicker id="start_time" v-model="form.start_time" showTime hourFormat="24" dateFormat="dd/mm/yy" fluid />
+                    <DatePicker id="start_time" v-model="form.start_time" showTime hourFormat="24" :invalid="form.invalid('start_time')" dateFormat="dd/mm/yy" fluid />
                     <small v-if="form.invalid('start_time')" class="text-red-500">{{ form.errors.start_time }}</small>
                 </div>
                 <div>
                     <label for="end_time" class="block font-bold mb-3 required-field">Kết thúc</label>
-                    <DatePicker id="end_time" v-model="form.end_time" showTime hourFormat="24" dateFormat="dd/mm/yy" fluid />
+                    <DatePicker id="end_time" v-model="form.end_time" showTime hourFormat="24" :invalid="form.invalid('end_time')" dateFormat="dd/mm/yy" fluid />
                     <small v-if="form.invalid('end_time')" class="text-red-500">{{ form.errors.end_time }}</small>
                 </div>
             </div>
@@ -84,19 +84,19 @@
             <div v-for="(row, index) in form.quantities" :key="index">
                 <div class="grid grid-cols-4 gap-3 mb-6">
                     <div>
-                        <InputNumber id="qty" v-model="row.qty" @change="form.validate('qty')" autofocus :invalid="submitted && !row.qty" fluid />
-                        <small v-if="form.invalid('qty')" class="text-red-500">{{ form.errors.qty }}</small>
+                        <InputNumber v-model="row.qty" @change="form.validate('qty')" autofocus :invalid="submitted && form.errors[`quantities.${index}.qty`]" fluid />
+                        <small v-if="form.errors[`quantities.${index}.qty`]" class="text-red-500">{{ form.errors[`quantities.${index}.qty`] }}</small>
                     </div>
                     <div>
-                        <Select v-model="row.unit" @change="form.validate('unit')" :options="units" filter class="w-full" placeholder="Chọn đơn vị" />
-                        <small v-if="form.invalid('unit')" class="text-red-500">{{ form.errors.unit }}</small>
+                        <Select v-model="row.unit" @change="form.validate('unit')" :options="units" :invalid="submitted && form.errors[`quantities.${index}.unit`]" filter class="w-full" placeholder="Chọn đơn vị" />
+                        <small v-if="form.errors[`quantities.${index}.unit`]" class="text-red-500">{{ form.errors[`quantities.${index}.unit`] }}</small>
                     </div>
                     <div>
-                        <InputText id="delivery_time" v-model="row.delivery_time" @change="form.validate('delivery_time')" autofocus :invalid="submitted && !row.delivery_time" fluid />
-                        <small v-if="form.invalid('delivery_time')" class="text-red-500">{{ form.errors.delivery_time }}</small>
+                        <InputText id="delivery_time" v-model="row.delivery_time" @change="form.validate('delivery_time')" autofocus :invalid="submitted && form.errors[`quantities.${index}.delivery_time`]" fluid />
+                        <small v-if="form.errors[`quantities.${index}.delivery_time`]" class="text-red-500">{{ form.errors[`quantities.${index}.delivery_time`] }}</small>
                     </div>
                     <div>
-                        <Button v-if="0 == index" class="col-span-full" severity="success" label="Thêm" @click="addRow"></Button>
+                        <Button v-if="0 == index" class="col-span-full" severity="info" label="Thêm" @click="addRow"></Button>
                         <Button v-if="index >= 1" class="col-span-full" severity="danger" label="Xóa" @click="removeRow(index)"></Button>
                     </div>
                 </div>
