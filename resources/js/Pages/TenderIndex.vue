@@ -32,7 +32,6 @@
                 </div>
             </template>
             <template #empty> Không tìm thấy bộ thầu. </template>
-            <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
             <Column field="code" header="Mã" sortable style="min-width: 14rem">
                 <template #body="{ data }">
                     {{ data.code }}
