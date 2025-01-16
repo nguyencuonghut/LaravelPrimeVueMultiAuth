@@ -42,7 +42,7 @@
             </Column>
             <Column field="title" header="Tiêu đề" sortable style="min-width: 14rem">
                 <template #body="{ data }">
-                    {{ data.title }}
+                    <Button as="a" :label=" data.title" :href="data.url" rel="noopener" variant="link" />
                 </template>
                 <template #filter="{ filterModel }">
                     <InputText v-model="filterModel.value" type="text" placeholder="Tìm theo tiêu đề" />

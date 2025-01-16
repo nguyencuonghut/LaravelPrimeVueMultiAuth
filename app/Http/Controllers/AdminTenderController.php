@@ -29,6 +29,7 @@ class AdminTenderController extends Controller
                 'id' => $tender->id,
                 'code' => $tender->code,
                 'title' => $tender->title,
+                'url' => route('admin.tenders.show', $tender->id),
                 'packing' => $tender->packing,
                 'origin' => $tender->origin,
                 'delivery_condition' => $tender->delivery_condition,
@@ -141,7 +142,29 @@ class AdminTenderController extends Controller
      */
     public function show(Tender $tender)
     {
-        //
+        $my_tender = [
+            'title' => $tender->title,
+            'material' => $tender->material->code . ' - ' . $tender->material->name,
+            'packing' => $tender->packing,
+            'origin' => $tender->origin,
+            'delivery_condition' => $tender->delivery_condition,
+            'payment_condition' => $tender->payment_condition,
+            'freight_charge' => $tender->freight_charge,
+            'certificate' => $tender->certificate,
+            'other_term' => $tender->other_term,
+            'start_time' => Carbon::parse($tender->start_time)->toW3cString(),
+            'end_time' => Carbon::parse($tender->end_time)->toW3cString(),
+            'status' => $tender->status,
+            'quality' => $tender->quality->detail,
+        ];
+        $quantities = Quantity::where('tender_id', $tender->id)->orderBy('id', 'asc')->get()->map(function ($quantity) {
+            return collect($quantity)->only(['qty', 'unit', 'delivery_time']);
+        });
+
+        return Inertia::render('TenderShow', [
+            'tender' => $my_tender,
+            'quantities' => $quantities,
+        ]);
     }
 
     /**

@@ -37,6 +37,11 @@ class Tender extends Model
         return $this->belongsTo(Material::class);
     }
 
+    public function quality()
+    {
+        return $this->belongsTo(Quality::class);
+    }
+
     public function creator()
     {
         return $this->belongsTo(Admin::class);
