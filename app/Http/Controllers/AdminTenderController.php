@@ -72,8 +72,7 @@ class AdminTenderController extends Controller
             'export_tender' => 'Nhân viên mua hàng' ==  Auth::user()->role->name || 'Quản trị' ==  Auth::user()->role->name,
         ];
 
-        //TODO: chỉ lấy các Material có Quality status On
-        $materials = Material::orderBy('code', 'asc')->get()->map(function ($material) {
+        $materials = Material::where('status', 'On')->orderBy('code', 'asc')->get()->map(function ($material) {
             return $material->code . ' - ' . $material->name;
         });
         return Inertia::render('TenderCreate', [
@@ -150,8 +149,7 @@ class AdminTenderController extends Controller
      */
     public function edit(Tender $tender)
     {
-        //TODO: chỉ lấy các Material có Quality status On
-        $materials = Material::orderBy('code', 'asc')->get()->map(function ($material) {
+        $materials = Material::where('status', 'On')->orderBy('code', 'asc')->get()->map(function ($material) {
             return $material->code . ' - ' . $material->name;
         });
 
