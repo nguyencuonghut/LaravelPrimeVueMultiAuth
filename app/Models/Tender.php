@@ -32,6 +32,11 @@ class Tender extends Model
         'close_reason',
     ];
 
+    public function material()
+    {
+        return $this->belongsTo(Material::class);
+    }
+
     public function creator()
     {
         return $this->belongsTo(Admin::class);

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTenderRequest;
+use App\Http\Requests\UpdateTenderRequest;
 use App\Models\Admin;
 use App\Models\Material;
 use App\Models\Quality;
 use App\Models\Quantity;
 use App\Models\Tender;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
@@ -150,15 +150,95 @@ class AdminTenderController extends Controller
      */
     public function edit(Tender $tender)
     {
-        //
+        //TODO: chỉ lấy các Material có Quality status On
+        $materials = Material::orderBy('code', 'asc')->get()->map(function ($material) {
+            return $material->code . ' - ' . $material->name;
+        });
+
+        $my_tender = [
+            'id' => $tender->id,
+            'code' => $tender->code,
+            'title' => $tender->title,
+            'material' => $tender->material->code . ' - ' . $tender->material->name,
+            'packing' => $tender->packing,
+            'origin' => $tender->origin,
+            'delivery_condition' => $tender->delivery_condition,
+            'payment_condition' => $tender->payment_condition,
+            'freight_charge' => $tender->freight_charge,
+            'certificate' => $tender->certificate,
+            'other_term' => $tender->other_term,
+            'start_time' => Carbon::parse($tender->start_time)->toW3cString(),
+            'end_time' => Carbon::parse($tender->end_time)->toW3cString(),
+            'status' => $tender->status,
+        ];
+
+        $quantities = Quantity::where('tender_id', $tender->id)->orderBy('id', 'asc')->get()->map(function ($quantity) {
+            return collect($quantity)->only(['qty', 'unit', 'delivery_time']);
+        });
+        return Inertia::render('TenderEdit', [
+            'tender' => $my_tender,
+            'materials' => $materials,
+            'quantities' => $quantities,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Tender $tender)
+    public function update(UpdateTenderRequest $request, Tender $tender)
     {
-        //
+        //Check authorize
+        if ('Quản trị' != Auth::user()->role->name
+            || 'Nhân viên mua hàng' == Auth::user()->role->name) {
+            $request->session()->flash('message', 'Bạn không có quyền!');
+            return redirect()->back()->withErrors('Bạn không có quyền!');
+        }
+
+        //Get the Material
+        $material_arr = explode(' - ', $request->material);
+        $material_code = $material_arr[0];
+        $material_name   = $material_arr[1];
+        $material = Material::where('code', $material_code)->where('name', $material_name)->first();
+
+        //Get the current Quality of this Material
+        $quality = Quality::where('material_id', $material->id)->where('status', 'On')->first();
+
+        //Update the Tender
+        $tender->code = $material->code . '-'. Carbon::now()->format('YmdHi');
+        $tender->title = $request->title;
+        $tender->material_id = $material->id;
+        $tender->quality_id = $quality->id;
+        $tender->packing = $request->packing;
+        $tender->origin = $request->origin;
+        $tender->delivery_condition = $request->delivery_condition;
+        $tender->payment_condition = $request->payment_condition;
+        $tender->freight_charge = $request->freight_charge;
+        $tender->certificate = $request->certificate;
+        $tender->other_term = $request->other_term;
+        $tender->start_time = Carbon::parse($request->start_time)->tz('Asia/Ho_Chi_Minh');
+        $tender->end_time = Carbon::parse($request->end_time)->tz('Asia/Ho_Chi_Minh');
+        $tender->creator_id = Auth::user()->id;
+        $tender->save();
+
+        //Delete all old Quantities
+        $old_quantities = Quantity::where('tender_id', $tender->id)->get();
+        foreach ($old_quantities as $quantity) {
+            $quantity->delete();
+        }
+
+        //Create new Qualities
+        foreach ($request->quantities as $item) {
+            $quantity = [
+                'tender_id' => $tender->id,
+                'qty' => $item['qty'],
+                'unit' => $item['unit'],
+                'delivery_time' => $item['delivery_time'],
+            ];
+            Quantity::create($quantity);
+        }
+
+        $request->session()->flash('message', 'Sửa xong bộ thầu!');
+        return redirect()->route('admin.tenders.index');
     }
 
     /**

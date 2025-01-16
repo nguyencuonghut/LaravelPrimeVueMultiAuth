@@ -138,7 +138,7 @@ const openNew = () => {
 
 const editTender = (tender) => {
     setTender(tender);
-    router.visit('tenders/edit/`$form.id`');
+    router.visit(`tenders/${form.id}/edit`);
 };
 const confirmDeleteTender = (tender) => {
     setTender(tender);

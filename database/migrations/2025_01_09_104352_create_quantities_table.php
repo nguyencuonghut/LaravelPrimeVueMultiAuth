@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('quantities', function (Blueprint $table) {
             $table->id();
             $table->integer('qty');
-            $table->enum('unit', ['tấn', 'kg', 'chiếc']);
+            $table->enum('unit', ['Tấn', 'Kg', 'Chiếc']);
             $table->text('delivery_time')->nullable();
             $table->foreignId('tender_id')->constrained('tenders')->onDelete('cascade');
             $table->timestamps();
