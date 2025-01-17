@@ -128,7 +128,7 @@ const props = defineProps({
 });
 
 const units = ['Tấn', 'Kg', 'Chiếc'];
-const form = useForm('put', '/admin/tenders/1', {
+const form = useForm('put', `/admin/tenders/${props.tender.id}`, {
     id: props.tender.id,
     title: props.tender.title,
     material: props.tender.material,
